@@ -1,9 +1,9 @@
 {
-        "ListenAddr":"192.168.0.70:10389" ,
-        "AdserverIP":"192.168.0.220" ,
+        "ListenAddr":"192.168.0.101:10389" ,
+        "AdserverIP":"192.168.0.100" ,
         "Adserverport":"389" ,
-        "AdserverBindDN":"enli" ,
+        "AdserverBindDN":"Administrator" ,
         "AdserverBindPassword":"P@ssw0rd" ,
-        "AdserverBaseDN":"dc=tw,dc=nzgft" ,
+        "AdserverBaseDN":"dc=tw,dc=test" ,
         "AdserverFilter":"(&(objectClass=user)(sAMAccountName=%s))"
 }
