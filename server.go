@@ -4,16 +4,22 @@ import (
     "log"
     "os"
     "os/signal"
+    "strconv"
     "syscall"
-    "os/exec"
-    "strings"
     "encoding/json"
     ldap "./ldapserver"
+    ldapc "./go-ldapc"
+
 )
 
 type Config struct {
        ListenAddr string
        AdserverIP string
+       Adserverport string
+       AdserverBindDN string
+       AdserverBaseDN string
+       AdserverBindPassword string
+       AdserverFilter string
 }
 
 var c Config
@@ -55,37 +61,39 @@ func main() {
 }
 
 func handleBind(w ldap.ResponseWriter, m *ldap.Message) {
+    var iPort int
     r := m.GetBindRequest()
     res := ldap.NewBindResponse(ldap.LDAPResultSuccess)
-    app := "python"
-    arg0 := "ad.py"
-    arg2 := string(r.Name())
-    arg3 := string(r.AuthenticationSimple())
-
-    log.Printf("AD server %s", c.AdserverIP)
-    log.Printf("user %s", arg2)
-    log.Printf("pass %s", arg3)
-    cmd := exec.Command(app, arg0, c.AdserverIP, arg2, arg3)
-    stdout, err :=cmd.Output()
-    outinfo := string(stdout)
-    outinfo = strings.Replace(outinfo, "\n", "", -1)
-    log.Printf(outinfo)
+    username := string(r.Name())
+    password := string(r.AuthenticationSimple())
+    log.Printf("AD server %s:%s", c.AdserverIP, c.Adserverport)
+    log.Printf("user %s", username)
+    log.Printf("pass %s", password)
+    iPort, _ = strconv.Atoi(c.Adserverport)
+    
+	ldapclient := &ldapc.Client{
+        Protocol:  ldapc.LDAP,
+        Host:      c.AdserverIP,
+        Port:      iPort,
+        TLSConfig: nil,
+        Bind: &ldapc.AuthBind{
+            BindDN:       c.AdserverBindDN,
+            BindPassword: c.AdserverBindPassword,
+            BaseDN:       c.AdserverBaseDN,
+            Filter:       c.AdserverFilter,
+        },
+    }
+    entry, err := ldapclient.Authenticate(username, password)
     if err != nil {
-        log.Printf("system error !!")
+        log.Printf("LDAP Authenticate failed: %v\n", err)
         res.SetResultCode(ldap.LDAPResultInvalidCredentials)
         res.SetDiagnosticMessage("system error !!")
         w.Write(res)
         return
+    } else {
+	   w.Write(res)
+       log.Printf("%+v\n", entry)
+	   return
     }
-
-    if outinfo == "Succesfully authenticated" {
-        w.Write(res)
-        log.Printf("Succesfully User=%s, Pass=%s", string(r.Name()), string(r.AuthenticationSimple()))
-        return
-    }
-
-    log.Printf("Bind failed User=%s, Pass=%s", string(r.Name()), string(r.AuthenticationSimple()))
-    res.SetResultCode(ldap.LDAPResultInvalidCredentials)
-    res.SetDiagnosticMessage("invalid credentials")
-    w.Write(res)
+	return
 }
