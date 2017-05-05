@@ -60,3 +60,8 @@ print authenticate("192.168.0.101","admin","P@ssw0rd")
 例如 :
 admin@test1.com 找 ad1
 admin@test1.com 找 ad2
+
+PS : 我用 CentOS7 ...
+
+ 安裝 python-ldap 用 yum install python-ldap
+ 
