@@ -11,6 +11,8 @@ copy github.com/vjeantet/ldapserver as ldap server in ldapserver directory
 3. run sample file ..... or other you access ldap file
 4. stop server with ctrl-c
 
+...
+
 [root@test ldap-local]# go run local_ldap.go
 
 [server] 2017/01/20 11:33:48 Listening on 192.168.0.101:10389
@@ -47,9 +49,9 @@ copy github.com/vjeantet/ldapserver as ldap server in ldapserver directory
 
 [server] 2017/01/20 11:34:52 all clients connection closed
 
-用 golang 當 ldap 主機 ...但 ldap client 寫不出來 ....挖哩 golang 沒有找到可用的
+...
 
-用 golang 呼叫 python --> ad.py 去當 ldap client
+用 golang 當 ldap 主機 .. 
 
 想說當不同的 domain 時　go-ldap server 去找不同的 LDAP 或去找 mysql 認證 
 
