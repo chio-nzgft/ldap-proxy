@@ -11,45 +11,27 @@ copy github.com/vjeantet/ldapserver as ldap server in ldapserver directory
 3. run sample file ..... or other you access ldap file
 4. stop server with ctrl-c
 
-...
+```
+[server] 2017/05/05 09:52:11 Listening on 192.168.0.101:10389
+[server] 2017/05/05 09:52:16 Connection client [1] from 192.168.0.101:51066 accepted
+[server] 2017/05/05 09:52:16 <<< 1 - BindRequest - hex=&{301802010160130201030404656e6c6980085040737377307264}
+2017/05/05 09:52:16 AD server 192.168.0.100:389
+2017/05/05 09:52:16 user admin
+2017/05/05 09:52:16 pass P@ssw0rd
+2017/05/05 09:52:16 &{DN:CN=admin,OU=user,DC=tw,DC=nzgft Attributes:[0xc420068240 0xc4200682c0 0xc420068300 0xc420068340 0xc420068380 0xc420068400 0xc420068440 0xc420068480 0xc4200684c0 0xc420068500 0xc420068580 0xc4200685c0 0xc420068600 0xc420068640 0xc420068680 0xc4200686c0 0xc420068700 0xc420068740 0xc420068780 0xc4200687c0 0xc420068800 0xc420068840 0xc420068880 0xc4200688c0 0xc420068900 0xc420068940 0xc420068980 0xc4200689c0 0xc420068a00 0xc420068a40 0xc420068a80 0xc420068b00 0xc420068b40 0xc420068b80]}
+[server] 2017/05/05 09:52:16 >>> 1 - BindResponse - hex=300c02010161070a010004000400
+[server] 2017/05/05 09:52:16 <<< 1 - ExtendedRequest - hex=&{301e02010277198017312e332e362e312e342e312e343230332e312e31312e33}
+[server] 2017/05/05 09:52:16 >>> 1 - LDAPResult - hex=302f020102302a0a0135040004234f7065726174696f6e206e6f7420696d706c656d656e74656420627920736572766572
+[server] 2017/05/05 09:52:16 <<< 1 - UnbindRequest - hex=&{30050201034200}
+[server] 2017/05/05 09:52:16 client 1 close()
+[server] 2017/05/05 09:52:16 client 1 close() - stop reading from client
+[server] 2017/05/05 09:52:16 client 1 close() - Abandon signal sent to processors
+[server] 2017/05/05 09:52:16 client [1] request processors ended
+[server] 2017/05/05 09:52:16 client [1] connection closed
+[server] 2017/05/05 09:54:53 gracefully closing client connections...
+[server] 2017/05/05 09:54:53 all clients connection closed
 
-[root@test ldap-local]# go run local_ldap.go
-
-[server] 2017/01/20 11:33:48 Listening on 192.168.0.101:10389
-
-[server] 2017/01/20 11:33:51 Connection client [1] from 192.168.0.66:56056 accepted
-
-[server] 2017/01/20 11:33:51 <<< 1 - BindRequest - hex=&{301802010160130201030404656e6c6980085040737377307264}
-
-2017/01/20 11:33:51 AD server 192.168.0.100
-
-2017/01/20 11:33:51 user admin
-
-2017/01/20 11:33:51 pass P@ssw0rd
-
-2017/01/20 11:33:51 Succesfully authenticated
-
-2017/01/20 11:33:51 Succesfully User=enli, Pass=P@ssw0rd
-
-[server] 2017/01/20 11:33:51 >>> 1 - BindResponse - hex=300c02010161070a010004000400
-
-[server] 2017/01/20 11:33:51 <<< 1 - UnbindRequest - hex=&{30050201024200}
-
-[server] 2017/01/20 11:33:51 client 1 close()
-
-[server] 2017/01/20 11:33:51 client 1 close() - stop reading from client
-
-[server] 2017/01/20 11:33:51 client 1 close() - Abandon signal sent to processors
-
-[server] 2017/01/20 11:33:51 client [1] request processors ended
-
-[server] 2017/01/20 11:33:51 client [1] connection closed
-
-^C[server] 2017/01/20 11:34:52 gracefully closing client connections...
-
-[server] 2017/01/20 11:34:52 all clients connection closed
-
-...
+```
 
 用 golang 當 ldap 主機 .. 
 
