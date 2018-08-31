@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"log"
 	"os"
@@ -8,7 +9,7 @@ import (
 	"strconv"
 	"syscall"
 
-	ldapc "github.com/mkorolyov/ldap-proxy/go-ldapc"
+	"github.com/mkorolyov/ldap-proxy/go-ldapc"
 	ldap "github.com/mkorolyov/ldap-proxy/ldapserver"
 )
 
@@ -67,15 +68,13 @@ func handleBind(w ldap.ResponseWriter, m *ldap.Message) {
 	username := string(r.Name())
 	password := string(r.AuthenticationSimple())
 	log.Printf("AD server %s:%s", c.AdserverIP, c.Adserverport)
-	log.Printf("user %s", username)
-	log.Printf("pass %s", password)
 	iPort, _ = strconv.Atoi(c.Adserverport)
 
 	ldapclient := &ldapc.Client{
-		Protocol:  ldapc.LDAP,
+		Protocol:  ldapc.LDAPS,
 		Host:      c.AdserverIP,
 		Port:      iPort,
-		TLSConfig: nil,
+		TLSConfig: &tls.Config{InsecureSkipVerify: true},
 		Bind: &ldapc.AuthBind{
 			BindDN:       c.AdserverBindDN,
 			BindPassword: c.AdserverBindPassword,
