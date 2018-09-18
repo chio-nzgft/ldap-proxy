@@ -67,7 +67,6 @@ func handleBind(w ldap.ResponseWriter, m *ldap.Message) {
 	res := ldap.NewBindResponse(ldap.LDAPResultSuccess)
 	username := string(r.Name())
 	password := string(r.AuthenticationSimple())
-	log.Printf("AD server %s:%s", c.AdserverIP, c.Adserverport)
 	iPort, _ = strconv.Atoi(c.Adserverport)
 
 	ldapclient := &ldapc.Client{
@@ -91,7 +90,7 @@ func handleBind(w ldap.ResponseWriter, m *ldap.Message) {
 		return
 	} else {
 		w.Write(res)
-		log.Printf("%+v\n", entry)
+		log.Printf("LDAP BindRequest %+v\n", entry)
 		return
 	}
 	return

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/mkorolyov/ldap-proxy/logger"
 	"gopkg.in/ldap.v2"
 )
 
@@ -13,12 +14,12 @@ type Bind interface {
 }
 
 func userFilter(filter string, username string) string {
-	debug("Search: filter: %v, username: %v\n", filter, username)
+	logger.Debug("Search: filter: %v, username: %v\n", filter, username)
 	return fmt.Sprintf(filter, username)
 }
 
 func search(conn *ldap.Conn, username string, baseDN string, filter string) (*ldap.Entry, error) {
-	debug("Search: username: %v, baseDN: %v, filter: %v\n", username, baseDN, filter)
+	logger.Debug("Search: username: %v, baseDN: %v, filter: %v\n", username, baseDN, filter)
 	request := ldap.NewSearchRequest(
 		baseDN, ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0,
 		false, filter, nil, nil)
@@ -50,8 +51,6 @@ type AuthBind struct {
 }
 
 func (b *AuthBind) auth(conn *ldap.Conn, username, password string) (*ldap.Entry, error) {
-	debug("BindDN: %v, BindPassword: %v\n", b.BindDN, b.BindPassword)
-
 	err := conn.Bind(b.BindDN, b.BindPassword)
 	if err != nil {
 		return nil, fmt.Errorf("LDAP Bind error, %s:%v", b.BindDN, err)
@@ -61,19 +60,19 @@ func (b *AuthBind) auth(conn *ldap.Conn, username, password string) (*ldap.Entry
 	if err != nil {
 		return nil, err
 	}
-	debug("User and user's entry found: %v\n%v\n", username, entry)
+	logger.Debug("User and user's entry found: %v\n%v\n", username, entry)
 
 	userDN := entry.DN
 	if userDN == "" {
 		return nil, errors.New("LDAP search was successful, but found no DN!")
 	}
-	debug("UserDN created: %v\n", userDN)
+	logger.Debug("UserDN created: %v\n", userDN)
 
 	err = conn.Bind(userDN, password)
 	if err != nil {
 		return nil, fmt.Errorf("LDAP Bind failed. user dn: %v", userDN)
 	}
-	debug("User authenticated: %v\n", userDN)
+	logger.Debug("User authenticated: %v\n", userDN)
 
 	return entry, nil
 
@@ -92,19 +91,19 @@ type DirectBind struct {
 
 func (b *DirectBind) auth(conn *ldap.Conn, username, password string) (*ldap.Entry, error) {
 	userDN := fmt.Sprintf(b.UserDN, username)
-	debug("UserDN created: %v\n", userDN)
+	logger.Debug("UserDN created: %v\n", userDN)
 
 	err := conn.Bind(userDN, password)
 	if err != nil {
 		return nil, fmt.Errorf("LDAP Bind error, %s:%v", userDN, err)
 	}
-	debug("User found and authenticated:  %v\n", userDN)
+	logger.Debug("User found and authenticated:  %v\n", userDN)
 
 	entry, err := search(conn, username, userDN, userFilter(b.Filter, username))
 	if err != nil {
 		return nil, err
 	}
-	debug("User's entry found:  %v\n%v\n", username, entry)
+	logger.Debug("User's entry found:  %v\n%v\n", username, entry)
 
 	return entry, nil
 }
