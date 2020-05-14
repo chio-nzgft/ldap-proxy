@@ -5,6 +5,8 @@ import (
 	"net"
 	"sync"
 	"time"
+
+	log "github.com/mkorolyov/ldap-proxy/logger"
 )
 
 // Server is an LDAP server.
@@ -105,7 +107,7 @@ func (s *Server) serve() error {
 
 		i = i + 1
 		cli.Numero = i
-		Logger.Printf("Connection client [%d] from %s accepted", cli.Numero, cli.rwc.RemoteAddr().String())
+		log.Debug("Connection client [%d] from %s accepted", cli.Numero, cli.rwc.RemoteAddr().String())
 		s.wg.Add(1)
 		go cli.serve()
 	}
